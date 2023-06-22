@@ -22,3 +22,7 @@ def check_guess(guess, target_word):
         elif guess[i] in target_word:
             incorrect_letters.append[letter]
     return correct_letters, incorrect_letters
+
+# Heursitic search goes here
+def heuristic_search():
+    return
