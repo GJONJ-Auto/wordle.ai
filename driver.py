@@ -10,3 +10,13 @@ def is_valid(word):
     else:
         ok = False
     return ok
+
+def check_guess(guess, target_word):
+    correct_letters = []
+    incorrect_letters = []
+    for letter in range(len(guess)):
+        if guess[letter] == target_word[letter]:
+            correct_letters.append(guess[letter])
+        elif guess[i] in target_word:
+            incorrect_letters.append[letter]
+    return correct_letters, incorrect_letters
