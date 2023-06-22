@@ -6,7 +6,7 @@ wordle_list = ["apple", "table", "chair"] #This will be where we import the word
 def is_valid(word):
     ok = True
     if len(word) == 5 and word in wordle_list:
-        return
+        return ok
     else:
         ok = False
     return ok
@@ -19,7 +19,7 @@ def check_guess(guess, target_word):
         if guess[letter] == target_word[letter]:
             correct_letters.append(guess[letter])
         elif guess[letter] in target_word:
-            incorrect_letters.append[letter]
+            incorrect_letters.append(guess[letter])
     return correct_letters, incorrect_letters
 
 # Heursitic search goes here
@@ -40,7 +40,7 @@ def play_wordle_ai():
         target_word = input("Enter a 5-letter word: ")
     
     print("Press 'j' to start round 1: ")
-    if input != 'j':
+    if input() != 'j':
         return
     
     turns = 0
