@@ -10,7 +10,9 @@ def is_valid(word):
     else:
         ok = False
     return ok
-
+# This function checks to see if the word that the ai guessed has any correct letters/incorrect.
+# NOTE: This function does not know if the letters are guessed correctly but not in the correct spot
+# Need to add functionalility that checks that
 def check_guess(guess, target_word):
     correct_letters = []
     incorrect_letters = []
