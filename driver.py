@@ -12,15 +12,15 @@ def is_valid(word):
     return ok
 # This function checks to see if the word that the ai guessed has any correct letters/incorrect.
 # NOTE: Incorrect letters is letters that are in the word but not in the correct place.
-def check_guess(guess, target_word):
-    correct_letters = []
-    incorrect_letters = []
-    for letter in range(len(guess)):
-        if guess[letter] == target_word[letter]:
-            correct_letters.append(guess[letter])
-        elif guess[letter] in target_word:
-            incorrect_letters.append(guess[letter])
-    return correct_letters, incorrect_letters
+def check_guess(guess, target_word, correct_letters, valid_letters, invalid_letters):
+
+    for index, letter in enumerate(guess):
+        if guess[index] == target_word[index]:
+            correct_letters[index] = letter
+        elif letter in target_word:
+            valid_letters.append(letter)
+        else:
+            invalid_letters.append(letter)
 
 # Heursitic search goes here
 def heuristic_search(check_guess):
@@ -42,23 +42,27 @@ def play_wordle_ai():
     print("Press 'j' to start round 1: ")
     if input() != 'j':
         return
-    
+    # Initialize the lists here
+    correct_letters = ['_'] * 5
+    valid_letters = []
+    invalid_letters = []
     turns = 0
     while turns < 6:
         turns += 1
         print("\nRound", turns)
         #AI guess goes here
         # THIS IS JUST TO TEST
-        guess = generate_random_word()
+        guess = input()
 
         print("Word guessed: ",guess)
-        correct_letters, incorrect_letters = check_guess(guess, target_word)
+        check_guess(guess, target_word, correct_letters, valid_letters, invalid_letters)
+
 
         print("Letters in the correct spot:", ', '.join(correct_letters))
-        print("Letters valid:", ', '.join(incorrect_letters))
+        print("Letters valid:", ', '.join(valid_letters))
         # Here is where we check to see if the ai guessed not letters correctly i.e letters that 
         # do not appear at all in the word.
-        print("Invalid letters:", ', '.join(set(target_word) - set(correct_letters + incorrect_letters)))
+        print("Invalid letters:", ', '.join(invalid_letters))
 
         if guess == target_word:
             print("\nA.I has solved the word!")
