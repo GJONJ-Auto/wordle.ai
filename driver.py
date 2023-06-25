@@ -14,13 +14,17 @@ def is_valid(word):
 # NOTE: Incorrect letters is letters that are in the word but not in the correct place.
 def check_guess(guess, target_word):
     correct_letters = []
-    incorrect_letters = []
+    valid_letters = []
+    invalid_letters =[]
+
     for letter in range(len(guess)):
         if guess[letter] == target_word[letter]:
             correct_letters.append(guess[letter])
         elif guess[letter] in target_word:
-            incorrect_letters.append(guess[letter])
-    return correct_letters, incorrect_letters
+            valid_letters.append(guess[letter])
+        elif guess[letter] not in target_word:
+            invalid_letters.append(guess[letter])
+    return correct_letters, valid_letters, invalid_letters
 
 # Heursitic search goes here
 def heuristic_search(check_guess):
@@ -52,13 +56,13 @@ def play_wordle_ai():
         guess = generate_random_word()
 
         print("Word guessed: ",guess)
-        correct_letters, incorrect_letters = check_guess(guess, target_word)
+        correct_letters, valid_letters, invalid_letters = check_guess(guess, target_word)
 
         print("Letters in the correct spot:", ', '.join(correct_letters))
-        print("Letters valid:", ', '.join(incorrect_letters))
+        print("Letters valid:", ', '.join(valid_letters))
         # Here is where we check to see if the ai guessed not letters correctly i.e letters that 
         # do not appear at all in the word.
-        print("Invalid letters:", ', '.join(set(target_word) - set(correct_letters + incorrect_letters)))
+        print("Invalid letters:", ', '.join(invalid_letters))
 
         if guess == target_word:
             print("\nA.I has solved the word!")
