@@ -1,7 +1,20 @@
 import random
 import copy
 
-wordle_list = ["apple", "table", "chair", "taste", "penny", "racer", "found", "laser", "lazed", "slate", "nanny", "stare"] #This will be where we import the wordle list. Probably should import JSON file.
+#wordle_list = ["apple", "table", "chair", "taste", "penny", "racer", "found", "laser", "lazed", "slate"] #This will be where we import the wordle list. Probably should import JSON file.
+
+#This function will run through the wordle list file that we grabbed off of the web that confirms
+#how many words there are supposed to be and sort them into a list
+def read_file_to_list(filename):
+    wordle_list = []
+    with open(filename, 'r') as file:
+        for line in file:
+            word = line.strip()  #Assuming each line contains a single word
+            wordle_list.append(word)
+    return wordle_list
+
+wordle_list = read_file_to_list('wordle_list.txt')
+
 
 #Check if the word is valid (User input -> wordle list)
 def is_valid(word):
