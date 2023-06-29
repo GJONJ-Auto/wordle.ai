@@ -19,12 +19,12 @@ wordle_list = read_file_to_list('wordle_list.txt')
 
 #Check if the word is valid (User input -> wordle list)
 def is_valid(word):
-    ok = True
-    if len(word) == 5 and word in wordle_list:
-        return ok
-    else:
-        ok = False
-    return ok
+    if len(word) != 5:
+        return False
+    for node in wordle_list:
+        if node.word == word:
+            return True
+    return False
 
 def get_guess_results(guess, target_word, target_letters):
     t_l = copy.deepcopy(target_letters)
@@ -50,34 +50,41 @@ def get_guess_results(guess, target_word, target_letters):
     return guess_results
 
 def remove_invalid_words_from_list(word_list, guess_word, guess_results):
-    word_list.remove(guess_word)
- 
+    word_list = remove_word_from_list(word_list, guess_word)
+
     for letter_index in range(len(guess_word)):
         # remove words from word list that do not have the correct(green) letter at same specified index 
         if guess_results[letter_index] == 1:
-            word_list = [word for word in word_list if word[letter_index] == guess_word[letter_index]]
+            word_list = [word for word in word_list if word.word[letter_index] == guess_word[letter_index]]
         # remove words from word list that do not contain the letter(yellow)
         # or that do contain letter at same specified index 
         elif guess_results[letter_index] == 2:
-            word_list = [word for word in word_list if guess_word[letter_index] in word 
-                         and guess_word[letter_index] != word[letter_index]]
-        # guess result == 0, remove words from word list that have too many occurences of letter(grey)
+            word_list = [word for word in word_list if guess_word[letter_index] in word.word 
+                         and guess_word[letter_index] != word.word[letter_index]]
+        # guess result == 0, remove words from word list that have too many occurrences of letter(grey)
         else:
             # find number of allowed occurrences of the letter before narrowing down word list
-            allowed_occurences = 0
+            allowed_occurrences = 0
             chr_occr = find_char_occurences(guess_word, guess_word[letter_index])
             for chr_idx in chr_occr:
                 if guess_results[chr_idx] == 1 or guess_results[chr_idx] == 2:
-                    allowed_occurences += 1
+                    allowed_occurrences += 1
             
             word_list = [word for word in word_list if 
-                         len(find_char_occurences(word, guess_word[letter_index])) <= allowed_occurences]
-
+                         len(find_char_occurences(word.word, guess_word[letter_index])) <= allowed_occurrences]
     return word_list
 
+
+def remove_word_from_list(word_list, guess_word):
+    new_word_list = []
+    for node in word_list:
+        if node.word != guess_word:
+            new_word_list.append(node)
+    return new_word_list
+
 # get list of indexes of occurances of a character in a string
-def find_char_occurences(str, chr):
-    return [index for index, x in enumerate(str) if chr == x]
+def find_char_occurences(node, chr):
+    return [index for index, x in enumerate(node) if chr == x]
     
 # Heursitic search goes here
 def heuristic_search(check_guess):
@@ -86,7 +93,7 @@ def heuristic_search(check_guess):
 # Just to test the play_wordle_ai, this function simply guesses random words
 # WILL REMOVE ONCE IMPLEMENTED heurstic_search
 def generate_random_word(word_list):
-    return random.choice(word_list)
+    return random.choice(word_list).word
 
 def play_wordle_ai():
     current_word_list = wordle_list
@@ -120,9 +127,9 @@ def play_wordle_ai():
         print("Word guessed: ",guess)
         guess_results = get_guess_results(guess, target_word, target_letters)
         print("guess results: ", guess_results)
-        print("word list before: ", current_word_list)
+        print("word list before: ", [node.word for node in current_word_list])
         current_word_list = remove_invalid_words_from_list(current_word_list, guess, guess_results)
-        print("word list after:  ", current_word_list)
+        print("word list after:  ", [node.word for node in current_word_list])
 
         if guess == target_word:
             print("\nA.I has solved the word!")
