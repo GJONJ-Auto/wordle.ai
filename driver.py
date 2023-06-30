@@ -25,15 +25,7 @@ def is_valid(word):
             return True
     return False
 
-#function to calculate the value of a word by numerical letter ranking
-def calculate_word_value(word, letter_values):
-    value = 0
-    for letter in word:
-        if letter in letter_values:
-            value += letter_values[letter]
-    return value
-
-#letter dictionary ranking letters based on how often users choose them
+#letter dictionary ranking based on how often users choose them
 letter_values = {
     'a': 25, 'b': 9, 'c': 17, 
     'd': 14, 'e': 26, 'f': 8, 
@@ -45,9 +37,26 @@ letter_values = {
     'v': 5, 'w': 6, 'x': 3, 
     'y': 15, 'z': 4,
 }
-#calculating the word value
-word_value = calculate_word_value(word, letter_values) #word not defined, will fix 
 
+#function to calculate the value of a word by numerical letter ranking
+def calculate_word_value(word, letter_values):
+    value = 0
+    for letter in word:
+        if letter in letter_values:
+            value += letter_values[letter]
+    return value
+
+#this will read the words from the text file and word_values will be the dictionary
+#holding the numerical values calculated for each word
+word_file = 'wordle_list.txt'
+word_values = {}
+
+with open(word_file, 'r') as file:
+    for line in file:
+        word = line.strip() #runs through the list word for word
+        word_value = calculate_word_value(word, letter_values) 
+        word_values[word] = word_value #runs the calculation function and stores words/values
+        
 
 def get_guess_results(guess, target_word, target_letters):
     t_l = copy.deepcopy(target_letters)
