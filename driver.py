@@ -35,12 +35,18 @@ def calculate_word_value(word, letter_values):
 
 #letter dictionary ranking letters based on how often users choose them
 letter_values = {
-    'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 10, 'k': 11,
-    'l': 12, 'm': 13, 'n': 14, 'o': 15, 'p': 16, 'q': 17, 'r': 18, 's': 19, 't': 20,
-    'u': 21, 'v': 22, 'w': 23, 'x': 24, 'y': 25, 'z': 26,
+    'a': 25, 'b': 9, 'c': 17, 
+    'd': 14, 'e': 26, 'f': 8, 
+    'g': 10, 'h': 13, 'i': 20, 
+    'j': 1, 'k': 7, 'l': 21, 
+    'm': 11, 'n': 18, 'o': 23, 
+    'p': 12, 'q': 2, 'r': 24, 
+    's': 19, 't': 22, 'u': 16, 
+    'v': 5, 'w': 6, 'x': 3, 
+    'y': 15, 'z': 4,
 }
 #calculating the word value
-word_value = calculate_word_value(word, letter_values)
+word_value = calculate_word_value(word, letter_values) #word not defined, will fix 
 
 
 def get_guess_results(guess, target_word, target_letters):
