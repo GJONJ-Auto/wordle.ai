@@ -16,7 +16,6 @@ def read_file_to_list(filename):
 
 wordle_list = read_file_to_list('wordle_list.txt')
 
-
 #Check if the word is valid (User input -> wordle list)
 def is_valid(word):
     if len(word) != 5:
@@ -25,6 +24,39 @@ def is_valid(word):
         if node.word == word:
             return True
     return False
+
+#letter dictionary ranking based on how often users choose them
+letter_values = {
+    'a': 25, 'b': 9, 'c': 17, 
+    'd': 14, 'e': 26, 'f': 8, 
+    'g': 10, 'h': 13, 'i': 20, 
+    'j': 1, 'k': 7, 'l': 21, 
+    'm': 11, 'n': 18, 'o': 23, 
+    'p': 12, 'q': 2, 'r': 24, 
+    's': 19, 't': 22, 'u': 16, 
+    'v': 5, 'w': 6, 'x': 3, 
+    'y': 15, 'z': 4,
+}
+
+#function to calculate the value of a word by numerical letter ranking
+def calculate_word_value(word, letter_values):
+    value = 0
+    for letter in word:
+        if letter in letter_values:
+            value += letter_values[letter]
+    return value
+
+#this will read the words from the text file and word_values will be the dictionary
+#holding the numerical values calculated for each word
+word_file = 'wordle_list.txt'
+word_values = {}
+
+with open(word_file, 'r') as file:
+    for line in file:
+        word = line.strip() #runs through the list word for word
+        word_value = calculate_word_value(word, letter_values) 
+        word_values[word] = word_value #runs the calculation function and stores words/values
+        
 
 def get_guess_results(guess, target_word, target_letters):
     t_l = copy.deepcopy(target_letters)
