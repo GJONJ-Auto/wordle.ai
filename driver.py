@@ -46,6 +46,12 @@ def calculate_word_value(word, letter_values):
             value += letter_values[letter]
     return value
 
+def add_values_to_word_list(word_list):
+    for index in range(len(word_list)):
+        word_list[index].value = calculate_word_value(word_list[index].word, letter_values)
+    return word_list
+
+
 #this will read the words from the text file and word_values will be the dictionary
 #holding the numerical values calculated for each word
 word_file = 'wordle_list.txt'
@@ -114,9 +120,24 @@ def remove_word_from_list(word_list, guess_word):
             new_word_list.append(node)
     return new_word_list
 
+# sorts list of words by value in descending order
+def sort_word_list_by_value(word_list):
+    sorted_list = sorted(word_list, key=lambda x: x.value, reverse=True)
+    return sorted_list
+
 # get list of indexes of occurances of a character in a string
 def find_char_occurences(node, chr):
     return [index for index, x in enumerate(node) if chr == x]
+
+# create dictionary to keep track of letter occurences in target word
+def get_target_letters(target_word):
+    target_letters = {}
+    for letter in target_word:
+        if letter in target_letters:
+            target_letters[letter] += 1
+        else:
+            target_letters[letter] = 1
+    return target_letters
     
 # Heursitic search goes here
 def heuristic_search(check_guess):
@@ -127,49 +148,55 @@ def heuristic_search(check_guess):
 def generate_random_word(word_list):
     return random.choice(word_list).word
 
+# automatically selects guesses until target word is found, returns number of turns used
+def auto_solve_wordle(target, show_guesses, guess_type):
+    current_word_list = copy.deepcopy(wordle_list)
+    current_word_list = add_values_to_word_list(current_word_list)
+    target_letters = get_target_letters(target)
+    target_found = False
+    turns = 1
+    guess = ""
+    guess_results = []
+
+    while not target_found:
+          if guess_type == "1":
+              guess = generate_random_word(current_word_list)
+          elif guess_type == "2":
+               current_word_list = sort_word_list_by_value(current_word_list)
+               guess = current_word_list[0].word
+
+          guess_results = get_guess_results(guess, target, target_letters)
+          if show_guesses:
+              print('turn {} guess: {}      Results: {}'.format(turns, guess, guess_results))
+          
+          if guess == target:
+              target_found = True
+              if show_guesses:
+                  print("target word found!")
+          else:
+              current_word_list = remove_invalid_words_from_list(current_word_list, guess, guess_results)
+              turns += 1
+    return turns
+
 def play_wordle_ai():
-    current_word_list = wordle_list
-    print("Welcome to Wordle AI!")
-    target_word = input("Enter a 5-letter word: ")
+    again = 'y'
+    while again != 'n':
+        print("Welcome to Wordle AI!")
+        print("MENU")
+        print("1: solve wordle using random guessing")
+        print("2: Solve wordle using best-first search based on letter weights")
+        choice = input ("Enter your choice: ")
 
-    while not is_valid(target_word):
-        print("Invalid word. Please try again.")
-        target_word = input("Enter a 5-letter word: ")
+        if choice == "1" or choice == "2":
+            target_word = input("Enter a 5-letter word: ")
+            while not is_valid(target_word):
+                print("Invalid word. Please try again.")
+                target_word = input("Enter a 5-letter word: ")
 
-    #create dictionary to keep track of letter occurences in target word
-    target_letters = {}
-    for letter in target_word:
-        if letter in target_letters:
-            target_letters[letter] += 1
-        else:
-            target_letters[letter] = 1
+        auto_solve_wordle(target_word, True, choice)
+
+        again = input("Press 'y' to play again or 'n' to quit: ")
+    return
     
-    print("Press 'j' to start round 1: ")
-    if input() != 'j':
-        return
-    
-    turns = 0
-    while turns < 6:
-        turns += 1
-        print("\nRound", turns)
-        #AI guess goes here
-        # THIS IS JUST TO TEST
-        guess = generate_random_word(current_word_list)
-
-        print("Word guessed: ",guess)
-        guess_results = get_guess_results(guess, target_word, target_letters)
-        print("guess results: ", guess_results)
-        print("word list before: ", [node.word for node in current_word_list])
-        current_word_list = remove_invalid_words_from_list(current_word_list, guess, guess_results)
-        print("word list after:  ", [node.word for node in current_word_list])
-
-        if guess == target_word:
-            print("\nA.I has solved the word!")
-            return
-        print("\nPress 'j' to start round " + str(turns + 1) + ":")
-        if input() != 'j':
-            return
-    print("\n A.I ran out of turns!")
-
 # Run
 play_wordle_ai()
