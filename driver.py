@@ -41,9 +41,14 @@ letter_values = {
 #function to calculate the value of a word by numerical letter ranking
 def calculate_word_value(word, letter_values):
     value = 0
+    prev_letters = []
     for letter in word:
         if letter in letter_values:
-            value += letter_values[letter]
+            if letter in prev_letters:
+                value += letter_values[letter]/2
+            else:
+                value += letter_values[letter]
+                prev_letters.append(letter)
     return value
 
 def add_values_to_word_list(word_list):
