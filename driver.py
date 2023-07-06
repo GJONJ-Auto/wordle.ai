@@ -27,15 +27,15 @@ def is_valid(word):
 
 #letter dictionary ranking based on how often users choose them
 letter_values = {
-    'a': 25, 'b': 9, 'c': 17, 
-    'd': 14, 'e': 26, 'f': 8, 
-    'g': 10, 'h': 13, 'i': 20, 
-    'j': 1, 'k': 7, 'l': 21, 
-    'm': 11, 'n': 18, 'o': 23, 
-    'p': 12, 'q': 2, 'r': 24, 
-    's': 19, 't': 22, 'u': 16, 
-    'v': 5, 'w': 6, 'x': 3, 
-    'y': 15, 'z': 4,
+    'a': 24, 'b': 9, 'c': 12, 
+    'd': 16, 'e': 25, 'f': 6, 
+    'g': 10, 'h': 11, 'i': 21, 
+    'j': 3, 'k': 8, 'l': 20, 
+    'm': 14, 'n': 18, 'o': 23, 
+    'p': 13, 'q': 1, 'r': 22, 
+    's': 26, 't': 19, 'u': 17, 
+    'v': 5, 'w': 7, 'x': 2, 
+    'y': 15, 'z': 4
 }
 
 #function to calculate the value of a word by numerical letter ranking
@@ -143,6 +143,20 @@ def get_target_letters(target_word):
         else:
             target_letters[letter] = 1
     return target_letters
+
+# gets average guesses used by both guessing methods using random samples from wordle list
+def compare_guessing_methods(sample_size):
+    target_indexes = random.sample(range(len(wordle_list)), sample_size)
+    current_target = ""
+    random_guesses = 0
+    heuristic_search_guesses = 0
+    for i in target_indexes:
+        current_target = wordle_list[i].word
+        random_guesses += auto_solve_wordle(current_target, False, "1")
+        heuristic_search_guesses += auto_solve_wordle(current_target, False, "2")
+    print("Random Guessing: average guesses used per word was: ", random_guesses/sample_size)
+    print("Best First Search Guessing: average guesses used per word was: ", heuristic_search_guesses/sample_size)
+    return
     
 # Heursitic search goes here
 def heuristic_search(check_guess):
@@ -177,30 +191,40 @@ def auto_solve_wordle(target, show_guesses, guess_type):
           if guess == target:
               target_found = True
               if show_guesses:
-                  print("target word found!")
+                  print("Target word found!")
           else:
               current_word_list = remove_invalid_words_from_list(current_word_list, guess, guess_results)
+              if turns == 6:
+                  if show_guesses:
+                    print("Ran out of guesses!")
+                  break
               turns += 1
     return turns
 
 def play_wordle_ai():
     again = 'y'
     while again != 'n':
-        print("Welcome to Wordle AI!")
-        print("MENU")
-        print("1: solve wordle using random guessing")
-        print("2: Solve wordle using best-first search based on letter weights")
-        choice = input ("Enter your choice: ")
+        print("\nWelcome to Wordle AI!")
+        print("\nMENU")
+        print("-----------------------------------------------------------------")
+        print("1: Solve wordle using random guessing")
+        print("2: Solve wordle using best-first search guessing")
+        print("3: Compare guessing methods from 100 random words")
+        print("-----------------------------------------------------------------")
+        choice = input ("\nEnter your choice: ")
 
         if choice == "1" or choice == "2":
             target_word = input("Enter a 5-letter word: ")
             while not is_valid(target_word):
                 print("Invalid word. Please try again.")
                 target_word = input("Enter a 5-letter word: ")
-
-        auto_solve_wordle(target_word, True, choice)
-
-        again = input("Press 'y' to play again or 'n' to quit: ")
+            auto_solve_wordle(target_word, True, choice)
+        elif choice == "3":
+            compare_guessing_methods(100)
+        else:
+            pass
+        
+        again = input("\nPress 'y' to play again or 'n' to quit: ")
     return
     
 # Run
